@@ -156,4 +156,4 @@ class Formatter {
   };
 }
 
-export default new Formatter().format;
+export default Formatter;
