@@ -1,4 +1,4 @@
-import { MaskObject, ValueObject } from "./types.ts"
+import { MaskObject, ValueObject } from "./types.ts";
 
 class Formatter {
   private maskRegex: RegExp = /[0-9\-+#]/;
@@ -28,8 +28,7 @@ class Formatter {
     const offset: number = maskLength - end;
     const substr: string = mask.substring(offset, offset + 1);
 
-    const index: number = offset +
-      ((substr === "." || (substr === ",")) ? 1 : 0);
+    const index: number = offset + (substr === "." || substr === "," ? 1 : 0);
     this.maskObject.suffix = end > 0 ? mask.substring(index, maskLength) : "";
     this.maskObject.mask = mask.substring(this.getIndex(mask), index);
     this.maskObject.isNegative = this.maskObject.mask.charAt(0) === "-";
@@ -39,12 +38,13 @@ class Formatter {
   private masking(mask: string) {
     const maskLength: number = mask.length;
     const startMasking: number = this.getIndex(mask);
-    this.maskObject.prefix = startMasking > 0 ? mask.substring(0, startMasking) : "";
+    this.maskObject.prefix =
+      startMasking > 0 ? mask.substring(0, startMasking) : "";
 
     this.reverseString(mask, maskLength);
 
     let result: RegExpMatchArray | null = this.maskObject.mask.match(
-      this.notMaskRegex,
+      this.notMaskRegex
     );
     this.maskObject.decimal = (result && result[result.length - 1]) || ".";
     this.maskObject.separator = (result && result[1] && result[0]) || ",";
@@ -73,20 +73,20 @@ class Formatter {
     vo.sign = isNegative ? "-" : "";
 
     vo.value = Number(vo.value).toFixed(
-      maskObject.fraction.toString && maskObject.fraction.length,
+      maskObject.fraction.toString && maskObject.fraction.length
     );
     vo.value = Number(vo.value).toString();
 
-    const posTrailZero: any = maskObject.fraction &&
-      maskObject.fraction.lastIndexOf("0");
+    const posTrailZero: any =
+      maskObject.fraction && maskObject.fraction.lastIndexOf("0");
     let [valInteger = "0", valFraction = ""] = vo.value.split(".");
     if (!valFraction || (valFraction && valFraction.length <= posTrailZero)) {
-      valFraction = posTrailZero < 0
-        ? ""
-        : (Number("0." + valFraction).toFixed(posTrailZero + 1)).replace(
-          "0.",
-          "",
-        );
+      valFraction =
+        posTrailZero < 0
+          ? ""
+          : Number("0." + valFraction)
+              .toFixed(posTrailZero + 1)
+              .replace("0.", "");
     }
 
     vo.integer = valInteger;
@@ -114,14 +114,14 @@ class Formatter {
 
     const posLeadZero: any = maskInteger && maskInteger.indexOf("0");
     if (posLeadZero > -1) {
-      while (vo.integer.length < (maskInteger.length - posLeadZero)) {
+      while (vo.integer.length < maskInteger.length - posLeadZero) {
         vo.integer = "0" + vo.integer;
       }
     } else if (Number(vo.integer) === 0) {
       vo.integer = "";
     }
 
-    const posSeparator: any = (szSep[1] && szSep[szSep.length - 1].length);
+    const posSeparator: any = szSep[1] && szSep[szSep.length - 1].length;
     if (posSeparator) {
       const voLength: number = vo.integer.length;
       const offset: number = voLength % posSeparator;
@@ -138,9 +138,10 @@ class Formatter {
       vo.result = vo.integer;
     }
 
-    vo.result += (maskObject.fraction && vo.fraction)
-      ? maskObject.decimal + vo.fraction
-      : "";
+    vo.result +=
+      maskObject.fraction && vo.fraction
+        ? maskObject.decimal + vo.fraction
+        : "";
     return vo;
   }
 
